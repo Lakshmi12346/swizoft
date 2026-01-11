@@ -1,0 +1,17 @@
+Django==5.0.3
+django-crispy-forms==2.2
+crispy-bootstrap5==0.7
+django-allauth==0.63.4
+django-environ==0.11.2
+django-extensions==3.2.3
+django-session-timeout==0.1.0
+python-decouple==3.8
+Pillow==10.3.0
+celery==5.3.6
+redis==5.0.1
+django-redis==5.4.0
+django-cors-headers==4.3.1
+drf-yasg==1.21.7
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+python-dotenv==1.0.1
