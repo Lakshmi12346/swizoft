@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card auth-card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="fas fa-user-plus"></i> Create Account</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" id="register-form">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    {{ form.email|as_crispy_field }}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.password1|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.password2|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Password Requirements:</strong>
+                        <ul class="mb-0">
+                            <li>At least 8 characters long</li>
+                            <li>Contains uppercase and lowercase letters</li>
+                            <li>Contains at least one number</li>
+                            <li>Contains at least one special character</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                        <label class="form-check-label" for="termsCheck">
+                            I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a>
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="mb-0">Already have an account?</p>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="fas fa-sign-in-alt"></i> Login Here
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Terms Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Terms of Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>By creating an account, you agree to:</p>
+                <ul>
+                    <li>Use the system responsibly</li>
+                    <li>Keep your credentials secure</li>
+                    <li>Not share your account with others</li>
+                    <li>Respect other users' privacy</li>
+                    <li>Comply with all applicable laws</li>
+                </ul>
+                <p>Your data will be protected according to our privacy policy.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Form submission handling
+    $('#register-form').on('submit', function() {
+        if (!$('#termsCheck').is(':checked')) {
+            alert('Please accept the Terms of Service');
+            return false;
+        }
+        $('button[type="submit"]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Creating Account...');
+    });
+    
+    // Password strength indicator
+    $('#id_password1').on('keyup', function() {
+        const password = $(this).val();
+        const strength = checkPasswordStrength(password);
+        
+        // Update password strength indicator
+        const indicator = $('#password-strength');
+        if (!indicator.length) {
+            $(this).after('<div id="password-strength" class="mt-2"></div>');
+        }
+        
+        $('#password-strength').html(`
+            <div class="progress">
+                <div class="progress-bar ${strength.color}" style="width: ${strength.score * 25}%"></div>
+            </div>
+            <small class="text-${strength.color}">${strength.text}</small>
+        `);
+    });
+    
+    function checkPasswordStrength(password) {
+        let score = 0;
+        
+        if (password.length >= 8) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+        
+        const levels = [
+            {color: 'danger', text: 'Very Weak'},
+            {color: 'warning', text: 'Weak'},
+            {color: 'info', text: 'Fair'},
+            {color: 'primary', text: 'Good'},
+            {color: 'success', text: 'Strong'}
+        ];
+        
+        return {score: score, ...levels[score]};
+    }
+});
+</script>
+{% endblock %}

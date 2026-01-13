@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-tachometer-alt"></i> Dashboard</h4>
+                </div>
+                <div class="card-body">
+                    <h3>Welcome, {{ user.first_name|default:user.email }}!</h3>
+                    <p class="lead">You have successfully logged in.</p>
+                    
+                    <div class="mt-4">
+                        <h5>Account Information:</h5>
+                        <ul>
+                            <li><strong>Email:</strong> {{ user.email }}</li>
+                            <li><strong>Full Name:</strong> {{ user.get_full_name|default:"Not set" }}</li>
+                            <li><strong>Last Login:</strong> {{ user.last_login|date:"F d, Y H:i" }}</li>
+                            <li><strong>Date Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'logout' %}" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                        <a href="/" class="btn btn-secondary">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
